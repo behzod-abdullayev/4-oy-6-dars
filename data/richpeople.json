@@ -1,0 +1,26 @@
+[
+    {
+        "id": "96184e8c-dcd5-45f3-9b04-e929a4d0fdb1",
+        "fullname": "Elon Musk",
+        "age": "54",
+        "owner": "tesla, spaceX, X, neurolink",
+        "money": "480.5 billions of dollar",
+        "rank": "1"
+    },
+    {
+        "id": "c9519814-7eb4-4479-b0cc-27dd713353ea",
+        "fullname": "Larry Page",
+        "age": "52",
+        "owner": "google",
+        "money": "262.2 billions of dollar",
+        "rank": "2"
+    },
+    {
+        "id": "e5cb607c-6e34-4b35-a0ab-20318b3f19c4",
+        "fullname": "Abdullayev behzod",
+        "age": "18",
+        "owner": "phone, laptop",
+        "money": "∞ - 1 billions of dollar",
+        "rank": "elon musk - 0.1"
+    }
+]

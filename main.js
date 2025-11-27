@@ -262,6 +262,164 @@ const app = http.createServer((req, res) => {
       );
     }
   }
+//                                         richpeople
+
+//get
+    if (req.method === "GET" && req.url === "/get_all_richpeople") {
+    try {
+      const fileData = read_file("richpeople.json");
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(fileData));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  // GETONE
+  if (req.method === "GET" && req.url === `/get_one_richpeople/${reqId}`) {
+    try {
+      const fileData = read_file("richpeople.json");
+      const foundrichpeople = fileData.find((richpeople) => richpeople.id === reqId);
+      if (!foundrichpeople) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "richpeople not found",
+          })
+        );
+      }
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(foundrichpeople));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  //post
+  if (req.method === "POST" && req.url === "/add_richpeople") {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { fullname, age, owner, money, rank } = data;
+        const fileData = read_file("richpeople.json");
+        fileData.push({
+          id: uuid.v4(),
+          fullname,
+          age,
+          owner,
+          money,
+          rank
+        });
+
+        write_file("richpeople.json", fileData);
+        res.writeHead(201, opt);
+        res.end(
+          JSON.stringify({
+            message: "added new richpeople",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //put
+  if (req.method === "PUT" && req.url === `/update_richpeople/${reqId}`) {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { fullname, age, owner, money, rank } = data;
+        const fileData = read_file("richpeople.json");
+        const foundrichpeople = fileData.find((richpeople) => richpeople.id === reqId);
+        if (!foundrichpeople) {
+          res.writeHead(404, opt);
+          return res.end(
+            JSON.stringify({
+              message: "richpeople not found",
+            })
+          );
+        }
+        fileData.forEach((richpeople) => {
+          if (richpeople.id === reqId) {
+            richpeople.fullname = fullname ? fullname : richpeople.fullname;
+            richpeople.age = age ? age : richpeople.age;
+            richpeople.owner = owner ? owner : richpeople.owner;
+            richpeople.money = money ? money : richpeople.money;
+            richpeople.rank = rank ? rank : richpeople.rank;
+          }
+        });
+        write_file("richpeople.json", fileData);
+        res.writeHead(200, opt);
+        res.end(
+          JSON.stringify({
+            message: "updated richpeople",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //delete
+  if (req.method === "DELETE" && req.url === `/delete_richpeople/${reqId}`) {
+    try {
+      const fileData = read_file("richpeople.json");
+      const foundrichpeople = fileData.find((richpeople) => richpeople.id === reqId);
+      if (!foundrichpeople) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "richpeople not found",
+          })
+        );
+      }
+
+      fileData.forEach((richpeople, index) => {
+        if (richpeople.id === reqId) {
+          fileData.splice(index, 1);
+        }
+      });
+
+      write_file("richpeople.json", fileData);
+      res.writeHead(200, opt);
+      return res.end(
+        JSON.stringify({
+          message: "deleted richpeople",
+        })
+      );
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  
 });
 
 app.listen(3000, () => {
