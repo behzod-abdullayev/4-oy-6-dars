@@ -1,0 +1,34 @@
+[
+    {
+        "id": "003c33b0-f6fe-4f06-a5d5-f722de90e297",
+        "fullname": "Eldor SHomurodov",
+        "age": "30 years old",
+        "position": "forward",
+        "club": "istanbul basaksehir",
+        "height": "190 sm"
+    },
+    {
+        "id": "ed171a26-791a-43ee-8468-22045008e57c",
+        "fullname": " jalloliddin masharipov",
+        "age": "32 years old",
+        "position": "midfielder",
+        "club": "esteghlal",
+        "height": "172 sm"
+    },
+    {
+        "id": "844b19b6-2b7c-4c41-b04c-5adc3fc6c4eb",
+        "fullname": "Abduqodir husanov",
+        "age": "21 years old",
+        "position": "defender",
+        "club": "man city",
+        "height": "186 sm"
+    },
+    {
+        "id": "1484c70b-e096-4db7-951f-bad1e2fc45c2",
+        "fullname": "utkir yusupov",
+        "age": "34 years old",
+        "position": "goalkeeper",
+        "club": "foolad khuzestan",
+        "height": "185 sm"
+    }
+]

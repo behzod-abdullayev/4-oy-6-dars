@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs");
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const app = http.createServer((req, res) => {
-  const reqId = req.url.split("/").pop()
+  const reqId = req.url.split("/").pop();
   //                                                   authentication
   // register
   if (req.method === "POST" && req.url === "/register") {
@@ -262,10 +262,10 @@ const app = http.createServer((req, res) => {
       );
     }
   }
-//                                         richpeople
+  //                                         richpeople
 
-//get
-    if (req.method === "GET" && req.url === "/get_all_richpeople") {
+  //get
+  if (req.method === "GET" && req.url === "/get_all_richpeople") {
     try {
       const fileData = read_file("richpeople.json");
       res.writeHead(200, opt);
@@ -284,7 +284,9 @@ const app = http.createServer((req, res) => {
   if (req.method === "GET" && req.url === `/get_one_richpeople/${reqId}`) {
     try {
       const fileData = read_file("richpeople.json");
-      const foundrichpeople = fileData.find((richpeople) => richpeople.id === reqId);
+      const foundrichpeople = fileData.find(
+        (richpeople) => richpeople.id === reqId
+      );
       if (!foundrichpeople) {
         res.writeHead(404, opt);
         return res.end(
@@ -318,7 +320,7 @@ const app = http.createServer((req, res) => {
           age,
           owner,
           money,
-          rank
+          rank,
         });
 
         write_file("richpeople.json", fileData);
@@ -346,7 +348,9 @@ const app = http.createServer((req, res) => {
         const data = JSON.parse(lion);
         const { fullname, age, owner, money, rank } = data;
         const fileData = read_file("richpeople.json");
-        const foundrichpeople = fileData.find((richpeople) => richpeople.id === reqId);
+        const foundrichpeople = fileData.find(
+          (richpeople) => richpeople.id === reqId
+        );
         if (!foundrichpeople) {
           res.writeHead(404, opt);
           return res.end(
@@ -386,7 +390,9 @@ const app = http.createServer((req, res) => {
   if (req.method === "DELETE" && req.url === `/delete_richpeople/${reqId}`) {
     try {
       const fileData = read_file("richpeople.json");
-      const foundrichpeople = fileData.find((richpeople) => richpeople.id === reqId);
+      const foundrichpeople = fileData.find(
+        (richpeople) => richpeople.id === reqId
+      );
       if (!foundrichpeople) {
         res.writeHead(404, opt);
         return res.end(
@@ -419,7 +425,329 @@ const app = http.createServer((req, res) => {
     }
   }
 
-  
+  //                                         footbal players of  UZBEKISTAN
+
+  //get
+  if (req.method === "GET" && req.url === "/get_all_uzbfootball") {
+    try {
+      const fileData = read_file("uzbfootball.json");
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(fileData));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  // GETONE
+  if (req.method === "GET" && req.url === `/get_one_uzbfootball/${reqId}`) {
+    try {
+      const fileData = read_file("uzbfootball.json");
+      const founduzbfootball = fileData.find(
+        (uzbfootball) => uzbfootball.id === reqId
+      );
+      if (!founduzbfootball) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "uzbfootball not found",
+          })
+        );
+      }
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(founduzbfootball));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  //post
+  if (req.method === "POST" && req.url === "/add_uzbfootball") {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { fullname, age, position, club, height } = data;
+        const fileData = read_file("uzbfootball.json");
+        fileData.push({
+          id: uuid.v4(),
+          fullname,
+          age,
+          position,
+          club,
+          height,
+        });
+
+        write_file("uzbfootball.json", fileData);
+        res.writeHead(201, opt);
+        res.end(
+          JSON.stringify({
+            message: "added new uzbfootball",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //put
+  if (req.method === "PUT" && req.url === `/update_uzbfootball/${reqId}`) {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { fullname, age, position, club, height } = data;
+        const fileData = read_file("uzbfootball.json");
+        const founduzbfootball = fileData.find(
+          (uzbfootball) => uzbfootball.id === reqId
+        );
+        if (!founduzbfootball) {
+          res.writeHead(404, opt);
+          return res.end(
+            JSON.stringify({
+              message: "uzbfootball not found",
+            })
+          );
+        }
+        fileData.forEach((uzbfootball) => {
+          if (uzbfootball.id === reqId) {
+            uzbfootball.fullname = fullname ? fullname : uzbfootball.fullname;
+            uzbfootball.age = age ? age : uzbfootball.age;
+            uzbfootball.position = position ? position : uzbfootball.position;
+            uzbfootball.club = club ? club : uzbfootball.club;
+            uzbfootball.height = height ? height : uzbfootball.height;
+          }
+        });
+        write_file("uzbfootball.json", fileData);
+        res.writeHead(200, opt);
+        res.end(
+          JSON.stringify({
+            message: "updated uzbfootball",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //delete
+  if (req.method === "DELETE" && req.url === `/delete_uzbfootball/${reqId}`) {
+    try {
+      const fileData = read_file("uzbfootball.json");
+      const founduzbfootball = fileData.find(
+        (uzbfootball) => uzbfootball.id === reqId
+      );
+      if (!founduzbfootball) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "uzbfootball not found",
+          })
+        );
+      }
+
+      fileData.forEach((uzbfootball, index) => {
+        if (uzbfootball.id === reqId) {
+          fileData.splice(index, 1);
+        }
+      });
+
+      write_file("uzbfootball.json", fileData);
+      res.writeHead(200, opt);
+      return res.end(
+        JSON.stringify({
+          message: "deleted uzbfootball",
+        })
+      );
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+
+    //                                        dorilar
+
+  //get
+  if (req.method === "GET" && req.url === "/get_all_dorilar") {
+    try {
+      const fileData = read_file("dorilar.json");
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(fileData));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  // GETONE
+  if (req.method === "GET" && req.url === `/get_one_dori/${reqId}`) {
+    try {
+      const fileData = read_file("dorilar.json");
+      const founddorilar = fileData.find(
+        (dorilar) => dorilar.id === reqId
+      );
+      if (!founddorilar) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "dorilar not found",
+          })
+        );
+      }
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(founddorilar));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  //post
+  if (req.method === "POST" && req.url === "/add_dori") {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { name, type, specialty } = data;
+        const fileData = read_file("dorilar.json");
+        fileData.push({
+          id: uuid.v4(),
+          name,
+          type,
+          specialty,
+        });
+
+        write_file("dorilar.json", fileData);
+        res.writeHead(201, opt);
+        res.end(
+          JSON.stringify({
+            message: "added new dorilar",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //put
+  if (req.method === "PUT" && req.url === `/update_dorilar/${reqId}`) {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { name, type, specialty,} = data;
+        const fileData = read_file("dorilar.json");
+        const founddorilar = fileData.find(
+          (dorilar) => dorilar.id === reqId
+        );
+        if (!founddorilar) {
+          res.writeHead(404, opt);
+          return res.end(
+            JSON.stringify({
+              message: "dorilar not found",
+            })
+          );
+        }
+        fileData.forEach((dorilar) => {
+          if (dorilar.id === reqId) {
+            dorilar.name = name ? name : dorilar.name;
+            dorilar.type = type ? type : dorilar.type;
+            dorilar.specialty = specialty ? specialty : dorilar.specialty;
+
+          }
+        });
+        write_file("dorilar.json", fileData);
+        res.writeHead(200, opt);
+        res.end(
+          JSON.stringify({
+            message: "updated dorilar",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //delete
+  if (req.method === "DELETE" && req.url === `/delete_dorilar/${reqId}`) {
+    try {
+      const fileData = read_file("dorilar.json");
+      const founddorilar = fileData.find(
+        (dorilar) => dorilar.id === reqId
+      );
+      if (!founddorilar) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "dorilar not found",
+          })
+        );
+      }
+
+      fileData.forEach((dorilar, index) => {
+        if (dorilar.id === reqId) {
+          fileData.splice(index, 1);
+        }
+      });
+
+      write_file("dorilar.json", fileData);
+      res.writeHead(200, opt);
+      return res.end(
+        JSON.stringify({
+          message: "deleted dorilar",
+        })
+      );
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
 });
 
 app.listen(3000, () => {

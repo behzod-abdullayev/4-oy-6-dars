@@ -1,17 +1,20 @@
 [
-  {
-    "name": "kyupen",
-    "type": "kapsula",
-    "specialty": "headache"
-  },
-  {
-    "name": "ugol",
-    "type": "kapsula",
-    "specialty": "headache"
-  },
-  {
-    "name": "kyupen",
-    "type": "kapsula",
-    "specialty": "stomach ache"
-  }
+    {
+        "id": "7322c211-a6b5-4072-bdbb-9ea2925bc4a6",
+        "name": "kyupen",
+        "type": "kapsula",
+        "specialty": "headache"
+    },
+    {
+        "id": "ac461ad2-5f8f-4da5-adb1-80e6d5db0691",
+        "name": "kyupen",
+        "type": "kapsula",
+        "specialty": "stomach ache"
+    },
+    {
+        "id": "0c76af84-4906-4386-874a-1645cb65600e",
+        "name": "kyupen",
+        "type": "kapsula",
+        "specialty": "stomach ache"
+    }
 ]
