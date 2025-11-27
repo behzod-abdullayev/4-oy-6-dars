@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Rustam",
+    "surname": "alijonov",
+    "age": "34",
+    "specialty": "dentiast",
+    "experience": "6 years"
+  },
+  {
+    "name": "Abduvali",
+    "surname": "Raxmonov",
+    "age": "87",
+    "specialty": "Ophthalmologist",
+    "experience": "40 years"
+  },
+  {
+    "name": "Erkin",
+    "surname": "Samandarov",
+    "age": "30",
+    "specialty": "surgeon",
+    "experience": "2 years"
+  }
+]
