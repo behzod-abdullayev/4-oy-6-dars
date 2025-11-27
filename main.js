@@ -5,10 +5,10 @@ const opt = {
 };
 const { read_file, write_file } = require("./manage.js/managing");
 const bcrypt = require("bcryptjs");
-const { v4 } = require("uuid");
+const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
-
 const app = http.createServer((req, res) => {
+  const reqId = req.url.split("/").pop()
   //                                                   authentication
   // register
   if (req.method === "POST" && req.url === "/register") {
@@ -85,13 +85,15 @@ const app = http.createServer((req, res) => {
       const decode = await bcrypt.compare(password, foundUser.password);
 
       if (decode) {
-        const payload = {id: foundUser.id, username: foundUser.username}
-        const acces_token = jwt.sign(payload, "salom", {expiresIn: "15m"})
-        res.writeHead(200, opt)
-        return res.end(JSON.stringify({
+        const payload = { id: foundUser.id, username: foundUser.username };
+        const acces_token = jwt.sign(payload, "salom", { expiresIn: "15m" });
+        res.writeHead(200, opt);
+        return res.end(
+          JSON.stringify({
             messege: "logined succesfully",
-            acces_token
-        }))
+            acces_token,
+          })
+        );
       } else {
         res.writeHead(400, opt);
         return res.end(
@@ -101,6 +103,164 @@ const app = http.createServer((req, res) => {
         );
       }
     });
+  }
+
+  //                                                   ishchilar
+
+  //get
+
+  if (req.method === "GET" && req.url === "/get_all_ishchilar") {
+    try {
+      const fileData = read_file("ishchilar.json");
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(fileData));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  // GETONE
+  if (req.method === "GET" && req.url === `/get_one_ishchi/${reqId}`) {
+    try {
+      const fileData = read_file("ishchilar.json");
+      const foundishchi = fileData.find((ishchi) => ishchi.id === reqId);
+      if (!foundishchi) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "ishchi not found",
+          })
+        );
+      }
+      res.writeHead(200, opt);
+      res.end(JSON.stringify(foundishchi));
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
+  }
+
+  //post
+  if (req.method === "POST" && req.url === "/add_ishchi") {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { name, surname, age, specialty, experience } = data;
+        const fileData = read_file("ishchilar.json");
+        fileData.push({
+          id: uuid.v4(),
+          name,
+          surname,
+          age,
+          specialty,
+          experience,
+        });
+
+        write_file("ishchilar.json", fileData);
+        res.writeHead(201, opt);
+        res.end(
+          JSON.stringify({
+            message: "added new ishchi",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //put
+  if (req.method === "PUT" && req.url === `/update_ishchi/${reqId}`) {
+    req.on("data", (lion) => {
+      try {
+        const data = JSON.parse(lion);
+        const { name, surname, age, specialty, experience } = data;
+        const fileData = read_file("ishchilar.json");
+        const foundishchi = fileData.find((ishchi) => ishchi.id === reqId);
+        if (!foundishchi) {
+          res.writeHead(404, opt);
+          return res.end(
+            JSON.stringify({
+              message: "ishchi not found",
+            })
+          );
+        }
+        fileData.forEach((ishchi) => {
+          if (ishchi.id === reqId) {
+            ishchi.name = name ? name : ishchi.name;
+            ishchi.surname = surname ? surname : ishchi.surname;
+            ishchi.age = age ? age : ishchi.age;
+            ishchi.specialty = specialty ? specialty : ishchi.specialty;
+            ishchi.experience = experience ? experience : ishchi.experience;
+          }
+        });
+        write_file("ishchilar.json", fileData);
+        res.writeHead(200, opt);
+        res.end(
+          JSON.stringify({
+            message: "updated ishchi",
+          })
+        );
+      } catch (error) {
+        res.writeHead(500, opt);
+        res.end(
+          JSON.stringify({
+            message: "error massage",
+          })
+        );
+      }
+    });
+  }
+
+  //delete
+  if (req.method === "DELETE" && req.url === `/delete_ishchi/${reqId}`) {
+    try {
+      const fileData = read_file("ishchilar.json");
+      const foundishchi = fileData.find((ishchi) => ishchi.id === reqId);
+      if (!foundishchi) {
+        res.writeHead(404, opt);
+        return res.end(
+          JSON.stringify({
+            message: "ishchi not found",
+          })
+        );
+      }
+
+      fileData.forEach((ishchi, index) => {
+        if (ishchi.id === reqId) {
+          fileData.splice(index, 1);
+        }
+      });
+
+      write_file("ishchilar.json", fileData);
+      res.writeHead(200, opt);
+      return res.end(
+        JSON.stringify({
+          message: "deleted ishchi",
+        })
+      );
+    } catch (error) {
+      res.writeHead(500, opt);
+      res.end(
+        JSON.stringify({
+          message: "error massage",
+        })
+      );
+    }
   }
 });
 
